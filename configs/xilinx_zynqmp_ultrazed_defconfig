@@ -23,7 +23,7 @@ CONFIG_SYS_CPU="armv8"
 CONFIG_SYS_SOC="zynqmp"
 CONFIG_SYS_VENDOR="xilinx"
 CONFIG_SYS_BOARD="zynqmp"
-CONFIG_SYS_CONFIG_NAME="platform-top"
+CONFIG_SYS_CONFIG_NAME="xilinx_zynqmp_ultrazed_eg"
 
 #
 # ARM architecture
