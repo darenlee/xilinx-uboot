@@ -101,6 +101,7 @@ dtb-$(CONFIG_ARCH_ZYNQ) += zynq-zc702.dtb \
 	zynq-microzed.dtb \
 	zynq-cc108.dtb \
 	zynq-picozed.dtb \
+	zynq-picozed-sdr2.dtb \
 	zynq-topic-miami.dtb \
 	zynq-topic-miamiplus.dtb \
 	zynq-zc770-xm010.dtb \

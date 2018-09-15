@@ -174,7 +174,12 @@
 
 /* Environment */
 #ifndef CONFIG_ENV_IS_NOWHERE
-# ifndef CONFIG_SYS_NO_FLASH
+# if defined(CONFIG_ZYNQ_ENV_FAT)
+#  define CONFIG_ENV_IS_IN_FAT
+#  define FAT_ENV_INTERFACE         "mmc"
+#  define FAT_ENV_DEVICE_AND_PART   "0:1"
+#  define FAT_ENV_FILE              "uboot.env"
+# elif !defined(CONFIG_SYS_NO_FLASH)
 /* Environment in NOR flash */
 #  define CONFIG_ENV_IS_IN_FLASH
 # elif defined(CONFIG_ZYNQ_QSPI)
@@ -195,6 +200,8 @@
 # endif
 #endif
 
+#include <configs/mw_xilinx_common.h>
+
 /* enable preboot to be loaded before CONFIG_BOOTDELAY */
 #define CONFIG_PREBOOT
 
@@ -208,7 +215,7 @@
 	"ramdisk_load_address=0x4000000\0"	\
 	"devicetree_image=devicetree.dtb\0"	\
 	"devicetree_load_address=0x2000000\0"	\
-	"bitstream_image=system.bit.bin\0"	\
+	"bitstream_image=system.bit\0"	\
 	"boot_image=BOOT.bin\0"	\
 	"loadbit_addr=0x100000\0"	\
 	"loadbootenv_addr=0x2000000\0" \
@@ -231,7 +238,13 @@
 	"mmc_loadbit=echo Loading bitstream from SD/MMC/eMMC to RAM.. && " \
 		"mmcinfo && " \
 		"load mmc 0 ${loadbit_addr} ${bitstream_image} && " \
-		"fpga load 0 ${loadbit_addr} ${filesize}\0" \
+		"fpga loadb 0 ${loadbit_addr} ${filesize}\0" \
+	"sd_bitstream_existence_test=test -e mmc 0 /${bitstream_image}\0" \
+	"sd_boot_loadbit=" \
+		"if run sd_bitstream_existence_test; then " \
+			"run mmc_loadbit;" \
+		"fi; \0" \
+	ENV_CMD_INIT_ENV_ONCE \
 	"norboot=echo Copying Linux from NOR flash to RAM... && " \
 		"cp.b 0xE2100000 ${kernel_load_address} ${kernel_size} && " \
 		"cp.b 0xE2600000 ${devicetree_load_address} ${devicetree_size} && " \
@@ -255,12 +268,17 @@
 			"run uenvcmd; " \
 		"fi\0" \
 	"sdboot=if mmcinfo; then " \
+			"run uenv_init; " \
 			"run uenvboot; " \
+			"run sd_boot_loadbit; " \
 			"echo Copying Linux from SD to RAM... && " \
 			"load mmc 0 ${kernel_load_address} ${kernel_image} && " \
 			"load mmc 0 ${devicetree_load_address} ${devicetree_image} && " \
-			"load mmc 0 ${ramdisk_load_address} ${ramdisk_image} && " \
-			"bootm ${kernel_load_address} ${ramdisk_load_address} ${devicetree_load_address}; " \
+			"if load mmc 0 ${ramdisk_load_address} ${ramdisk_image}; then " \
+				"bootm ${kernel_load_address} ${ramdisk_load_address} ${devicetree_load_address}; " \
+			"else " \
+				"bootm ${kernel_load_address} - ${devicetree_load_address}; " \
+			"fi &&" \
 		"fi\0" \
 	"usbboot=if usb start; then " \
 			"run uenvboot; " \

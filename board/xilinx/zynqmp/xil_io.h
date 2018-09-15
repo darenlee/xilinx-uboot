@@ -11,31 +11,13 @@
 
 #define xil_printf(...)
 
-void Xil_ICacheEnable(void)
-{}
+void Xil_ICacheEnable(void);
+void Xil_DCacheEnable(void);
+void Xil_ICacheDisable(void);
+void Xil_DCacheDisable(void);
+void Xil_Out32(unsigned long addr, unsigned long val);
+int Xil_In32(unsigned long addr);
 
-void Xil_DCacheEnable(void)
-{}
-
-void Xil_ICacheDisable(void)
-{}
-
-void Xil_DCacheDisable(void)
-{}
-
-void Xil_Out32(unsigned long addr, unsigned long val)
-{
-	writel(val, addr);
-}
-
-int Xil_In32(unsigned long addr)
-{
-	return readl(addr);
-}
-
-void usleep(u32 sleep)
-{
-	udelay(sleep);
-}
+void usleep(u32 sleep);
 
 #endif /* XIL_IO_H */

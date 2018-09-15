@@ -59,4 +59,8 @@ config SYS_I2C_MUX_ADDR
 config SYS_I2C_MUX_EEPROM_SEL
 	int
 
+config ZYNQ_ENV_FAT
+	bool "Store environment on FAT partition"
+	default n
+
 endif
