@@ -164,7 +164,9 @@
 #define CONFIG_SYS_BOOTMAPSZ 0x8000000
 
 /* PREBOOT */
-#define CONFIG_PREBOOT	"echo U-BOOT for uz3eg-iocc-2017-2;setenv preboot; echo; dhcp"
+#define CONFIG_PREBOOT	"echo U-BOOT for uz3eg-iocc-2017-2;setenv preboot; echo;"
+
+#include <configs/mw_xilinx_common.h>
 
 /* Extra U-Boot Env settings */
 #define CONFIG_EXTRA_ENV_SETTINGS \
@@ -219,6 +221,6 @@
 ""
 
 /* BOOTCOMMAND */
-#define CONFIG_BOOTCOMMAND	"run default_bootcmd"
+#define CONFIG_BOOTCOMMAND	"run $modeboot"
 
 #endif /* __PLNX_CONFIG_H */
